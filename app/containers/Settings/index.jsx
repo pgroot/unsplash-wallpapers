@@ -16,6 +16,9 @@ import {
   setUpdateWallpaperTime,
   setActiveTheme,
   setAutomaticChangeActiveTheme,
+  setDownloadTargetDir,
+  setTempDir,
+  setHistoryLimit,
 } from './redux';
 
 type Props = {
@@ -26,6 +29,11 @@ type Props = {
   updateWallpaperSchedule : MapType,
   activeTheme : string,
   isChangeAutomaticActiveTheme : boolean,
+  downloadTargetDir: string,
+  setDownloadTargetDir: (data: string) => void,
+  setTempDir: (data: string) => void,
+  historyLimit: number,
+  setHistoryLimit: (data: number) => void,
 };
 
 type State = {
@@ -37,12 +45,18 @@ type State = {
     updateWallpaperSchedule: state.getIn(['Settings', 'updateWallpaperSchedule']),
     activeTheme: state.getIn(['Settings', 'activeTheme']),
     isChangeAutomaticActiveTheme: state.getIn(['Settings', 'isChangeAutomaticActiveTheme']),
+    downloadTargetDir: state.getIn(['Settings', 'downloadTargetDir']),
+    tempDir: state.getIn(['Settings', 'tempDir']),
+    historyLimit: state.getIn(['Settings', 'historyLimit']),
   }),
   {
     setUpdateWallpaperScheduleAction: setUpdateWallpaperSchedule,
     setUpdateWallpaperTimeAction: setUpdateWallpaperTime,
     setActiveThemeAction: setActiveTheme,
     setAutomaticChangeActiveThemeAction: setAutomaticChangeActiveTheme,
+    setDownloadTargetDir: setDownloadTargetDir,
+    setTempDir: setTempDir,
+    setHistoryLimit: setHistoryLimit,
   },
 )
 @autobind
@@ -57,7 +71,8 @@ class Settings extends PureComponent<Props, State> {
     this.state = {
       isRunAtStartup: false,
     };
-    this.updateMethods = ['Daily', 'Weekly', 'Manually'];
+    this.updateMethods = ['Hourly', 'Daily', 'Weekly', 'Manually'];
+    this.historyLimitOptions = [10, 50, 100, 150, 200];
   }
 
   componentDidMount() {
@@ -101,8 +116,24 @@ class Settings extends PureComponent<Props, State> {
     setAutomaticChangeActiveThemeAction(e.target.checked);
   }
 
+  handleDownloadDirChange(e : SyntheticEvent<HTMLInputElement>) {
+    const { setDownloadTargetDir } = this.props;
+    setDownloadTargetDir(e.target.value);
+  }
+
+  handleTempDirChange(e : SyntheticEvent<HTMLInputElement>) {
+    const { setTempDir } = this.props;
+    setTempDir(e.target.value);
+  }
+
+  handleSetHistoryLimit(e : SyntheticEvent<HTMLInputElement>) {
+    const { setHistoryLimit } = this.props;
+    setHistoryLimit(parseInt(e.target.value));
+  }
+
+
   render() {
-    const { updateWallpaperSchedule, activeTheme, isChangeAutomaticActiveTheme } = this.props;
+    const { updateWallpaperSchedule, activeTheme, isChangeAutomaticActiveTheme, downloadTargetDir, tempDir, historyLimit } = this.props;
     const { isRunAtStartup } = this.state;
     return (
       <StyledSettings>
@@ -185,6 +216,35 @@ class Settings extends PureComponent<Props, State> {
             )
           }
         </div>
+        <div className="dirs-download">
+          <label
+            className="download-dir"
+            htmlFor="download-dir"
+          >
+            Download Dir
+            <input id="download-dir" type="text" value={downloadTargetDir} onChange={this.handleDownloadDirChange} />
+          </label>
+
+        </div>
+        <label
+          className="auto-update"
+          htmlFor="update-method"
+        >
+          History Limit
+          <select
+            id="update-method"
+            defaultValue={historyLimit}
+            onChange={this.handleSetHistoryLimit}
+          >
+            {
+              this.historyLimitOptions.map((limit : number) => (
+                <option key={limit} value={limit}>
+                  {limit}
+                </option>
+              ))
+            }
+          </select>
+        </label>
         <button onClick={Settings.handleQuit} className="quit">
           Quit Unsplash Wallpapers
         </button>

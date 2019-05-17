@@ -19,6 +19,7 @@ type Props = {
   photoData : MapType,
   setWallpaperLoading : boolean,
   activeCategory : number,
+  downloadTargetDir: string,
 };
 
 type State = {
@@ -32,6 +33,7 @@ type State = {
     photoData: state.getIn(['Home', 'photoData']),
     activeCategory: state.getIn(['Categories', 'activeCategory']),
     activeTheme: state.getIn(['Settings', 'activeTheme']),
+    downloadTargetDir: state.getIn(['Settings', 'downloadTargetDir']),
   }),
   {
     getPhotoAction: getPhoto,
@@ -55,16 +57,16 @@ class Home extends PureComponent<Props, State> {
   }
 
   handleDownload() {
-    const { photoData } = this.props;
+    const { photoData,downloadTargetDir } = this.props;
     this.setState({ downloadLoading: true });
     axios.get(photoData.getIn(['links', 'download']), { responseType: 'arraybuffer' })
       .then(({ data }) => {
         const base64Image = new Buffer.from(data, 'binary').toString(
           'base64',
         );
+
         let picturePath = path.join(
-          os.homedir(),
-          '/Downloads',
+          downloadTargetDir,
           `unsplash-${photoData.get('id')}.png`,
         );
         picturePath = path.normalize(picturePath);
@@ -73,7 +75,7 @@ class Home extends PureComponent<Props, State> {
             downloadLoading: false,
           });
           new Notification('Download Completed!', {
-            body: `Image saved in "${os.homedir()}/Downloads"`,
+            body: `Image saved in "${downloadTargetDir}"`,
             icon: path.join(__dirname, '../resources/icons/64x64.png'),
           });
         });

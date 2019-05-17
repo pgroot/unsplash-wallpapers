@@ -45,17 +45,22 @@ function* setWallpaper() {
     if (window.navigator.onLine) {
       const reduxState = yield select();
       const photoData = reduxState.getIn(['Home', 'photoData']);
+      const downloadDir = reduxState.getIn(['Settings', 'downloadTargetDir']);
+      const historyLimit = reduxState.getIn(['Settings', 'historyLimit']);
       let hasPicture = false;
       let storedPictures = null;
       let picturePath = path.join(
-        os.homedir(),
-        '/Pictures',
+        downloadDir,
         `unsplash-${photoData.get('id')}.png`,
       );
       picturePath = path.normalize(picturePath);
       storage.get('pictures', (error, pictures) => {
         storedPictures = pictures;
         if (pictures.list && pictures.list.length > 0) {
+          if (pictures.list.length > historyLimit) {
+            pictures.list.pop();
+            storedPictures = pictures;
+          }
           pictures.list.forEach((pictureItem) => {
             if (pictureItem.id === photoData.get('id')) {
               hasPicture = true;

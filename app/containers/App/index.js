@@ -45,6 +45,11 @@ class App extends Component<Props> {
         activeCategory,
       } = this.props;
       switch (updateWallpaperSchedule) {
+        case 'Hourly':
+          if ((moment.duration(updateWallpaperDate)).asHours() >= 1) {
+            getPhotoAction({ setAutomaticWallpaper: true, activeCategory });
+          }
+          break;
         case 'Daily':
           if ((moment.duration(updateWallpaperDate)).asHours() >= 24) {
             getPhotoAction({ setAutomaticWallpaper: true, activeCategory });

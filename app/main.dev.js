@@ -13,7 +13,7 @@ const { autoUpdater } = require('electron-updater');
 const log = require('electron-log');
 
 const width = 375;
-const height = 385;
+const height = 425;
 
 if (process.platform === 'darwin') {
   app.dock.hide();

@@ -52,6 +52,11 @@ export default styled.div`
         outline: none;
       }
     }
+    &.download-dir {
+      > input {
+        margin-left: 5px;
+      }
+    }
   }
   > .choose-theme {
       text-align: center;

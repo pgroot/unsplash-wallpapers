@@ -39,7 +39,7 @@ export default styled.div`
     justify-content: center;
     align-items: center;
     margin-bottom: 5px;
-    height: 230px;
+    height: 270px;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
