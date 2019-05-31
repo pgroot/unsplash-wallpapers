@@ -34,6 +34,8 @@ class Client {
 
   static async decorateRequest({ method, url, options }) {
     const requestURL = `https://api.unsplash.com/${url}`;
+    //const con = require('electron').remote.getGlobal('console')
+    //con.log(requestURL)
     const requestHeadersDataDecoration = await Client.getHeaderDataDecoration();
     return {
       request: {

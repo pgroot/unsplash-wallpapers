@@ -44,19 +44,24 @@ class App extends Component<Props> {
         getPhotoAction,
         activeCategory,
       } = this.props;
+
+      let last = moment(updateWallpaperDate, 'DD.MM.YYYY HH:mm')
+      let now = moment()
+      let diff = now.diff(last, 'hours')
+
       switch (updateWallpaperSchedule) {
         case 'Hourly':
-          if ((moment.duration(updateWallpaperDate)).asHours() >= 1) {
+          if (diff >= 1) {
             getPhotoAction({ setAutomaticWallpaper: true, activeCategory });
           }
           break;
         case 'Daily':
-          if ((moment.duration(updateWallpaperDate)).asHours() >= 24) {
+          if (diff >= 24) {
             getPhotoAction({ setAutomaticWallpaper: true, activeCategory });
           }
           break;
         case 'Weekly':
-          if ((moment.duration(updateWallpaperDate)).asHours() >= 168) {
+          if (diff >= 168) {
             getPhotoAction({ setAutomaticWallpaper: true, activeCategory });
           }
           break;

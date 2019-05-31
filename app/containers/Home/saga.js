@@ -28,7 +28,7 @@ import {
 
 function* getPhoto() {
   yield takeLatest(GET_PHOTO, function* cb(action) {
-    const request = yield API.get(`photos/random?collections=${action.data.activeCategory}`);
+    const request = yield API.get(`photos/random?orientation=landscape&collections=${action.data.activeCategory}`);
     if (request && request.status === 200) {
       yield put({ type: GET_PHOTO_SUCCESS, data: request.data });
       if (action.data.setAutomaticWallpaper) {
@@ -70,7 +70,7 @@ function* setWallpaper() {
       });
       if (!hasPicture) {
         let base64Image = yield axios
-          .get(photoData.getIn(['urls', 'full']), {
+          .get(photoData.getIn(['urls', 'raw']) + "?q=90", {
             responseType: 'arraybuffer',
           });
         if (base64Image && (base64Image.status === 200)) {

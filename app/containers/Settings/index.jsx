@@ -88,10 +88,32 @@ class Settings extends PureComponent<Props, State> {
       isRunAtStartup: checked,
     });
     storage.set('isRunAtStartup', checked);
-    const minecraftAutoLauncher = new AutoLaunch({
-      name: 'Unsplash Wallpapers',
-      path: '/Applications/Unsplash Wallpapers.app', // eslint-disable-line
-    });
+
+    let minecraftAutoLauncher;
+    switch (process.platform) {
+      case 'win32':
+        minecraftAutoLauncher = new AutoLaunch({
+          name: 'Unsplash Wallpapers',
+          path: "C:/Users/%USERNAME%/AppData/Local/Programs/unsplash-wallpapers/Unsplash Wallpapers.exe", // eslint-disable-line
+        });
+        break;
+      case 'darwin':
+        minecraftAutoLauncher = new AutoLaunch({
+          name: 'Unsplash Wallpapers',
+          path: '/Applications/Unsplash Wallpapers.app', // eslint-disable-line
+        });
+        break;
+      case 'freebsd':
+      case 'linux':
+      case 'sunos':
+      default:
+        minecraftAutoLauncher = new AutoLaunch({
+          name: 'Unsplash Wallpapers',
+          path: '/Applications/Unsplash Wallpapers.app', // eslint-disable-line
+        });
+        break;
+    }
+
     if (checked) {
       minecraftAutoLauncher.enable();
     } else {
